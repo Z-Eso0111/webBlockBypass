@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Browser</title>
+</head>
+<body>
+    <h1>Virtual Browser</h1>
+    <form id="searchForm">
+        <input type="text" id="urlInput" placeholder="Enter URL...">
+        <button type="submit">Go</button>
+    </form>
+
+    <div id="resultContainer"></div>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var url = document.getElementById('urlInput').value.trim();
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'http://' + url; // Assuming http if not provided
+            }
+            fetch('Free_Proxy_List.txt')
+                .then(response => response.text())
+                .then(proxyList => {
+                    var randomProxy = proxyList.split('\n')[Math.floor(Math.random() * proxyList.split('\n').length)];
+                    var proxyParts = randomProxy.split(':');
+                    var proxyAddress = proxyParts[0];
+                    var proxyPort = proxyParts[1];
+                    var proxyURL = 'https://cors-anywhere.herokuapp.com/' + url; // Proxying the request
+
+                    // Simulating VPN connection
+                    console.log('Connecting to VPN with proxy: ' + proxyAddress + ':' + proxyPort);
+                    console.log('Visiting URL: ' + proxyURL);
+
+                    // Here, you would ideally make a request using the proxyURL variable
+                    // For simplicity, let's just display the URL
+                    document.getElementById('resultContainer').innerHTML = 'Connected to VPN with proxy: ' + proxyAddress + ':' + proxyPort + '<br>' +
+                        'Visiting URL: <a href="' + proxyURL + '" target="_blank">' + proxyURL + '</a>';
+                })
+                .catch(error => {
+                    console.error('Error fetching proxy list:', error);
+                });
+        });
+    </script>
+</body>
+</html>

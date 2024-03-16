@@ -28,9 +28,7 @@
 
             alert("Proxy üzerinden belirtilen siteye yönlendiriliyor: " + siteUrl);
 
-            // VPN bağlantısı oluşturulabilir, ancak tarayıcıda VPN desteği sağlamak zordur ve bu scriptte mümkün değildir.
-            // VPN bağlantısı oluşturulmadı, sadece proxy kullanıldı.
-            
+            // Belirtilen siteye proxy üzerinden yönlendirme yapılıyor
             window.location.href = proxyUrl + "/" + siteUrl;
         }
     </script>

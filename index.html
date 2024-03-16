@@ -41,9 +41,8 @@
                     console.log('Visiting URL: ' + url + ' via proxy: ' + proxyURL);
 
                     // Here, you would ideally make a request using the proxyURL variable
-                    // For simplicity, let's just display the URL
-                    document.getElementById('resultContainer').innerHTML = 'Connected to VPN with proxy: ' + proxyAddress + ':' + proxyPort + '<br>' +
-                        'Visiting URL: <a href="' + url + '" target="_blank">' + url + '</a>' + ' via proxy: ' + proxyURL;
+                    // For simplicity, let's just navigate to the URL in the same window
+                    window.location.href = proxyURL + '?url=' + encodeURIComponent(url);
                 })
                 .catch(error => {
                     console.error('Error fetching proxy list:', error);

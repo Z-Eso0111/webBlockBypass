@@ -1,33 +1,32 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sayfa Kaynağı Çalıştırma</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engellenmiş Siteye Erişim</title>
 </head>
 <body>
-  <h1>Sayfa Kaynağı Çalıştırma</h1>
-  <p>Bir web sayfasının kaynak kodunu yapıştırarak bu sayfada çalıştırabilirsiniz.</p>
-  <form action="calistir.php" method="post">
-    <label for="link">Sayfa Linki:</label>
-    <input type="url" id="link" name="link" placeholder="https://www.ornek.com/" required>
-    <button type="submit">Çalıştır</button>
-  </form>
-  <div id="sonuc"></div>
-  <script>
-    function calistir(link) {
-      document.getElementById("sonuc").innerHTML = "Yükleniyor...";
-      var xhr = new XMLHttpRequest();
-      xhr.open("GET", link, true);
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          document.getElementById("sonuc").innerHTML = xhr.responseText;
-        } else {
-          document.getElementById("sonuc").innerHTML = "Hata: " + xhr.status + " - " + xhr.statusText;
+    <h1>Engellenmiş Siteye Erişim</h1>
+    <p>Engellenmiş siteye erişmek için aşağıdaki butona tıklayın:</p>
+    <button onclick="accessBlockedSite()">Engellenmiş Siteye Git</button>
+
+    <script>
+        function accessBlockedSite() {
+            var proxyList = [
+                { ip: "103.137.108.86", port: 5678 },
+                { ip: "200.152.107.104", port: 1080 },
+                { ip: "125.229.3.41", port: 80 },
+                { ip: "104.20.75.132", port: 80 },
+                { ip: "103.127.52.132", port: 5678 }
+            ];
+
+            var randomProxy = proxyList[Math.floor(Math.random() * proxyList.length)];
+            var proxyUrl = "http://" + randomProxy.ip + ":" + randomProxy.port;
+
+            alert("Proxy üzerinden engellenmiş siteye yönlendiriliyor...");
+
+            window.location.href = proxyUrl;
         }
-      };
-      xhr.send();
-    }
-  </script>
+    </script>
 </body>
 </html>

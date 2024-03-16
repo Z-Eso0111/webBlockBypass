@@ -1,17 +1,76 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sanal Tarayıcı</title>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="script.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Browser</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        input[type="text"] {
+            width: calc(100% - 120px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        input[type="submit"] {
+            width: 100px;
+            padding: 10px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-  <h1>Sanal Tarayıcı</h1>
-  <p>Arama yapmak için bir URL girin ve Enter'a basın:</p>
-  <input type="text" id="url_giris" placeholder="URL Girin">
-  <button id="ara_butonu">Ara</button>
-  <div id="sonuc_alani"></div>
+    <div class="container">
+        <h2>Virtual Browser</h2>
+        <form id="searchForm">
+            <input type="text" id="urlInput" placeholder="Enter URL">
+            <input type="submit" value="Search">
+        </form>
+        <iframe id="virtualBrowser" width="100%" height="500"></iframe>
+    </div>
+
+    <script>
+        document.getElementById("searchForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            var url = document.getElementById("urlInput").value;
+            var proxyListUrl = "https://your-server-url/Free_Proxy_List.txt"; // Your proxy list URL
+            fetch(proxyListUrl)
+                .then(response => response.text())
+                .then(data => {
+                    var proxyList = data.split("\n").map(line => line.split(","));
+                    var proxy = proxyList[Math.floor(Math.random() * proxyList.length)];
+                    var proxyUrl = "socks://" + proxy[0] + ":" + proxy[7]; // Assuming SOCKS proxy
+                    var virtualBrowser = document.getElementById("virtualBrowser");
+                    virtualBrowser.src = "http://" + url;
+                    virtualBrowser.contentWindow.addEventListener("load", function() {
+                        console.log("Loaded with proxy:", proxyUrl);
+                        // Implement VPN connection using the proxyUrl
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching proxy list:", error);
+                });
+        });
+    </script>
 </body>
 </html>

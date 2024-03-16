@@ -53,13 +53,18 @@
         document.getElementById("searchForm").addEventListener("submit", function(event) {
             event.preventDefault();
             var url = document.getElementById("urlInput").value;
-            var proxyListUrl = "https://your-server-url/Free_Proxy_List.txt"; // Your proxy list URL
+            var proxyListUrl = "https://api.example.com/proxy_list"; // Your proxy list API endpoint
             fetch(proxyListUrl)
-                .then(response => response.text())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch proxy list");
+                    }
+                    return response.json();
+                })
                 .then(data => {
-                    var proxyList = data.split("\n").map(line => line.split(","));
+                    var proxyList = data;
                     var proxy = proxyList[Math.floor(Math.random() * proxyList.length)];
-                    var proxyUrl = "socks://" + proxy[0] + ":" + proxy[7]; // Assuming SOCKS proxy
+                    var proxyUrl = "socks://" + proxy.ip + ":" + proxy.port; // Assuming SOCKS proxy
                     var virtualBrowser = document.getElementById("virtualBrowser");
                     virtualBrowser.src = "http://" + url;
                     virtualBrowser.contentWindow.addEventListener("load", function() {
@@ -74,4 +79,3 @@
     </script>
 </body>
 </html>
-

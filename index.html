@@ -7,25 +7,31 @@
 </head>
 <body>
     <h1>Engellenmiş Siteye Erişim</h1>
-    <p>Engellenmiş siteye erişmek için aşağıdaki butona tıklayın:</p>
+    <label for="siteUrl">Site URL'si:</label>
+    <input type="text" id="siteUrl" placeholder="https://engellenmis-site.com">
+
     <button onclick="accessBlockedSite()">Engellenmiş Siteye Git</button>
 
     <script>
-        function accessBlockedSite() {
-            var proxyList = [
-                { ip: "103.137.108.86", port: 5678 },
-                { ip: "200.152.107.104", port: 1080 },
-                { ip: "125.229.3.41", port: 80 },
-                { ip: "104.20.75.132", port: 80 },
-                { ip: "103.127.52.132", port: 5678 }
-            ];
+        var proxyList = [
+            { ip: "103.137.108.86", port: 5678 },
+            { ip: "200.152.107.104", port: 1080 },
+            { ip: "125.229.3.41", port: 80 },
+            { ip: "104.20.75.132", port: 80 },
+            { ip: "103.127.52.132", port: 5678 }
+        ];
 
+        function accessBlockedSite() {
+            var siteUrl = document.getElementById("siteUrl").value;
             var randomProxy = proxyList[Math.floor(Math.random() * proxyList.length)];
             var proxyUrl = "http://" + randomProxy.ip + ":" + randomProxy.port;
 
-            alert("Proxy üzerinden engellenmiş siteye yönlendiriliyor...");
+            alert("Proxy üzerinden belirtilen siteye yönlendiriliyor: " + siteUrl);
 
-            window.location.href = proxyUrl;
+            // VPN bağlantısı oluşturulabilir, ancak tarayıcıda VPN desteği sağlamak zordur ve bu scriptte mümkün değildir.
+            // VPN bağlantısı oluşturulmadı, sadece proxy kullanıldı.
+            
+            window.location.href = proxyUrl + "/" + siteUrl;
         }
     </script>
 </body>

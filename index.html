@@ -3,77 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Virtual Browser</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-        }
-        input[type="text"] {
-            width: calc(100% - 120px);
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        input[type="submit"] {
-            width: 100px;
-            padding: 10px;
-            margin-left: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: #fff;
-            cursor: pointer;
-        }
-        input[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <title>Sanal Tarayıcı</title>
 </head>
 <body>
-    <div class="container">
-        <h2>Virtual Browser</h2>
-        <form id="searchForm">
-            <input type="text" id="urlInput" placeholder="Enter URL">
-            <input type="submit" value="Search">
-        </form>
-        <iframe id="virtualBrowser" width="100%" height="500"></iframe>
-    </div>
+    <h1>Sanal Tarayıcı</h1>
+    <form id="searchForm">
+        <label for="urlInput">Ziyaret etmek istediğiniz site URL'sini girin:</label><br>
+        <input type="text" id="urlInput" name="urlInput" required><br><br>
+        <button type="submit">Siteyi Ziyaret Et</button>
+    </form>
+    <div id="result"></div>
 
     <script>
         document.getElementById("searchForm").addEventListener("submit", function(event) {
             event.preventDefault();
-            var url = document.getElementById("urlInput").value;
-            var proxyListUrl = "https://api.example.com/proxy_list"; // Your proxy list API endpoint
-            fetch(proxyListUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Failed to fetch proxy list");
-                    }
-                    return response.json();
-                })
+            var url = document.getElementById("urlInput").value.trim();
+
+            // Proxy listesi
+            var proxyList = [
+                {"ip":"103.137.108.86","anonymityLevel":"elite","asn":"AS138023","country":"BD","isp":"Creation Online","latency":"190","org":"Creation Online","port":"5678","protocols":"socks5","responseTime":"2693","speed":"2","updated_at":"2024-03-15T23:55:48.187Z","upTime":"88","upTimeSuccessCount":"5727","upTimeTryCount":"6491"},
+                {"ip":"200.152.107.104","anonymityLevel":"elite","asn":"AS21571","country":"BR","isp":"MLS Wireless S/A","latency":"199","org":"MLS Projetos de Informatica","port":"1080","protocols":"socks5","responseTime":"4607","speed":"3","updated_at":"2024-03-15T23:55:48.185Z","upTime":"98","upTimeSuccessCount":"6313","upTimeTryCount":"6459"},
+                {"ip":"125.229.3.41","anonymityLevel":"elite","asn":"AS3462","country":"TW","isp":"Chunghwa Telecom Co., Ltd.","latency":"247","org":"Chunghwa Telecom Co. Ltd.","port":"80","protocols":"socks5","responseTime":"2300","speed":"1","updated_at":"2024-03-15T23:55:47.898Z","upTime":"99","upTimeSuccessCount":"6306","upTimeTryCount":"6392"},
+                {"ip":"104.20.75.132","anonymityLevel":"elite","asn":"AS13335","country":"CA","isp":"Cloudflare, Inc.","latency":"2","org":"Cloudflare, Inc.","port":"80","protocols":"socks4","responseTime":"3594","speed":"1","updated_at":"2024-03-15T23:55:47.986Z","upTime":"100","upTimeSuccessCount":"6564","upTimeTryCount":"6564"},
+                {"ip":"103.127.52.132","anonymityLevel":"elite","asn":"AS17995","country":"ID","isp":"PT iForte Global Internet","latency":"786","org":"Solusinet","port":"5678","protocols":"socks4","responseTime":"5008","speed":"2","updated_at":"2024-03-15T23:55:47.895Z","upTime":"88","upTimeSuccessCount":"5704","upTimeTryCount":"6506"}
+            ];
+
+            // Rastgele bir proxy seçme
+            var randomProxy = proxyList[Math.floor(Math.random() * proxyList.length)];
+
+            // Seçilen proxy ile URL'yi ziyaret etme
+            var proxyUrl = "http://" + randomProxy.ip + ":" + randomProxy.port;
+            var proxyConfig = {
+                mode: 'socks4',
+                proxy: proxyUrl
+            };
+
+            fetch(url, { method: 'GET', headers: { 'Proxy-Authorization': 'Basic ' + btoa(randomProxy.ip + ":" + randomProxy.port) }, agent: new (require('socks-proxy-agent'))(proxyConfig) })
+                .then(response => response.text())
                 .then(data => {
-                    var proxyList = data;
-                    var proxy = proxyList[Math.floor(Math.random() * proxyList.length)];
-                    var proxyUrl = "socks://" + proxy.ip + ":" + proxy.port; // Assuming SOCKS proxy
-                    var virtualBrowser = document.getElementById("virtualBrowser");
-                    virtualBrowser.src = "http://" + url;
-                    virtualBrowser.contentWindow.addEventListener("load", function() {
-                        console.log("Loaded with proxy:", proxyUrl);
-                        // Implement VPN connection using the proxyUrl
-                    });
+                    document.getElementById("result").innerHTML = "<h2>" + url + " adresi aşağıdaki proxy üzerinden ziyaret edildi:</h2><pre>" + data + "</pre>";
                 })
                 .catch(error => {
-                    console.error("Error fetching proxy list:", error);
+                    document.getElementById("result").innerHTML = "<h2>Hata!</h2><p>" + error + "</p>";
                 });
         });
     </script>
